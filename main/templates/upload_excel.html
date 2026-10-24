@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Μεταφόρτωση Excel{% endblock %}
+
+{% block content %}
+
+<style>
+    .container p {
+        margin: 5px 0;
+    }
+</style>
+
+<div class="container" style="
+    font-family: Arial, sans-serif;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 400px;
+    margin: 10px auto;
+">
+
+    <h2 style="text-align:center; margin-bottom:20px;">Μεταφόρτωση αρχείου Excel</h2>
+
+    <p>
+        📥 Από εδώ μπορείτε να ανεβάσετε αρχείο Excel για ενημέρωση ή εισαγωγή δεδομένων.
+    </p>
+
+    <form method="POST" enctype="multipart/form-data" style="display:flex; flex-direction:column;">
+        {% csrf_token %}
+
+        <label for="id_file">📁 Επιλέξτε αρχείο Excel (.xlsx ή .xls):</label>
+        {{ form.as_p }}
+        <p id="fileError" style="display:none; color:red; font-size:0.9em;"></p>
+
+        <button type="submit" style="
+            padding:10px;
+            background-color:#5cb85c;
+            border:none;
+            color:white;
+            border-radius:4px;
+            cursor:pointer;
+            margin-top:15px;
+        ">Μεταφόρτωση αρχείου</button>
+    </form>
+
+    <h3 style="margin-top:20px;">ℹ️ Οδηγίες πριν τη μεταφόρτωση</h3>
+    <ul style="font-size:0.85em;">
+        <li>✅ Το αρχείο πρέπει να είναι σε μορφή <strong>.xlsx</strong> ή <strong>.xls</strong></li>
+        <li>📌 Βεβαιωθείτε ότι τα δεδομένα είναι σωστά και πλήρη</li>
+        <li>⚠️ Η μεταφόρτωση μπορεί να αντικαταστήσει υπάρχοντα δεδομένα</li>
+    </ul>
+
+    <p style="margin-top:20px; font-size:0.8em;">
+        ❓ Αν αντιμετωπίσετε κάποιο πρόβλημα, επικοινωνήστε με τον διαχειριστή του συστήματος.
+    </p>
+
+</div>
+
+<script>
+    const form = document.querySelector('form');
+    const fileInput = document.getElementById('id_file');
+    const fileError = document.getElementById('fileError');
+
+    form.addEventListener('submit', function(event) {
+        let valid = true;
+
+        if(!fileInput.value) {
+            fileError.textContent = '❌ Παρακαλώ επιλέξτε ένα αρχείο Excel.';
+            fileError.style.display = 'block';
+            fileInput.style.border = '2px solid red';
+            valid = false;
+        } else {
+            const allowedExtensions = /(\.xlsx|\.xls)$/i;
+            if(!allowedExtensions.exec(fileInput.value)) {
+                fileError.textContent = '❌ Μη έγκυρη μορφή αρχείου. Επιτρέπονται μόνο .xlsx ή .xls';
+                fileError.style.display = 'block';
+                fileInput.style.border = '2px solid red';
+                valid = false;
+            } else {
+                fileError.style.display = 'none';
+                fileInput.style.border = '';
+            }
+        }
+
+        if(!valid) {
+            event.preventDefault();
+        }
+    });
+</script>
+
+{% endblock %}

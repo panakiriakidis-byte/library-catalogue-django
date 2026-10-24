@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>Προβολή όλων των εγγραφών</title>
+
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 6px;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #eee;
+        }
+
+        /* ====== PRINT ONLY ====== */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                margin: 0;
+            }
+
+            @page {
+                margin: 10mm;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 🔴 ΔΕΝ ΘΑ ΦΑΙΝΟΝΤΑΙ ΣΤΟ SAVE / PRINT -->
+<div class="no-print" style="margin-bottom:15px; display:flex; gap:10px;">
+    <a href="{% url 'home' %}"
+       style="padding:6px 14px; background:#2c7be5; color:white; text-decoration:none; border-radius:4px; font-weight:bold;">
+        Αρχική
+    </a>
+
+    
+</div>
+
+{% if not request.GET %}
+    <h1>Προβολή όλων των εγγραφών</h1>
+{% endif %}
+
+{% if not request.GET %}
+<form class="no-print"
+      method="get"
+      style="
+          margin-bottom:15px;
+          display:flex;
+          gap:12px;
+          align-items:center;
+          font-size:14px;
+      ">
+
+    <label style="display:flex; align-items:center; gap:6px; color:#333;">
+        Από
+        <input type="number"
+               name="from_num"
+               required
+               style="
+                   width:90px;
+                   padding:4px 6px;
+                   border:1px solid #191919;
+                   border-radius:4px;
+               ">
+    </label>
+
+    <label style="display:flex; align-items:center; gap:6px; color:#333;">
+        Έως
+        <input type="number"
+               name="to_num"
+               required
+               style="
+                   width:90px;
+                   padding:4px 6px;
+                   border:1px solid #191919;
+                   border-radius:4px;
+               ">
+    </label>
+
+    <button type="submit"
+            style="
+                padding:5px 14px;
+                background:#198754;
+                color:white;
+                border:none;
+                border-radius:4px;
+                font-size:13px;
+                cursor:pointer;
+            ">
+        Εκτύπωση
+    </button>
+
+</form>
+{% endif %}
+
+
+
+<!-- 🟢 ΜΟΝΟ Ο ΠΙΝΑΚΑΣ ΘΑ ΦΑΙΝΕΤΑΙ ΣΤΗΝ ΕΚΤΥΠΩΣΗ -->
+<div style="overflow-x:auto;">
+<table id="booksTable">
+    <thead>
+        <tr>
+            <th>Αριθμός Εισαγωγής</th>
+            <th>Ημερομηνία Εισαγωγής</th>
+            <th>Συγγραφέας</th>
+            <th>ΚΟΗΑ</th>
+            <th>Τίτλος</th>
+            <th>Εκδότης</th>
+            <th>Έκδοση</th>
+            <th>Έτος Έκδοσης</th>
+            <th>Τόπος Έκδοσης</th>
+            <th>Σχήμα</th>
+            <th>Σελίδες</th>
+            <th>Τόμος</th>
+            <th>Τρόπος Προμηθείας/Παραλαβής</th>
+            <th>ISBN</th>
+            <th>Στήλη1</th>
+            <th>Στήλη2</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in people %}
+        <tr>
+            <td>{{ p.ari8mosEisagoghs }}</td>
+            <td>{{ p.hmeromhnia_eis }}</td>
+            <td>{{ p.syggrafeas }}</td>
+            <td>{{ p.koha }}</td>
+            <td>{{ p.titlos }}</td>
+            <td>{{ p.ekdoths }}</td>
+            <td>{{ p.ekdosh }}</td>
+            <td>{{ p.etosEkdoshs }}</td>
+            <td>{{ p.toposEkdoshs }}</td>
+            <td>{{ p.sxhma }}</td>
+            <td>{{ p.selides }}</td>
+            <td>{{ p.tomos }}</td>
+            <td>{{ p.troposPromPar }}</td>
+            <td>{{ p.ISBN }}</td>
+            <td>{{ p.sthlh1 }}</td>
+            <td>{{ p.sthlh2 }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<script>
+window.onload = function () {
+
+    const table = document.getElementById("booksTable");
+    const tbody = table.tBodies[0];
+    const rows = Array.from(tbody.rows);
+
+    
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('from_num') && params.has('to_num')) {
+        const from = Number(params.get('from_num'));
+        const to = Number(params.get('to_num'));
+
+        rows.forEach(row => {
+            const value = Number(row.cells[0].innerText);
+            if (value < from || value > to) {
+                row.style.display = "none";
+            }
+        });
+
+        window.print();
+    }
+};
+</script>
+
+</body>
+</html>

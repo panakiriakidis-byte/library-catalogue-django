@@ -1,0 +1,175 @@
+<h2>Πιθανά Διπλότυπα</h2>
+
+{% for dup in duplicates %}
+
+<!-- ========================= -->
+<!--   ΠΙΝΑΚΑΣ 1: EXCEL RECORD -->
+<!-- ========================= -->
+
+<h3 style="margin-top:30px; color:#1f3c88;">Excel Record</h3>
+
+<table border="1" cellpadding="8" cellspacing="0" width="100%">
+    <thead>
+        <tr style="background:#f0f0f0;">
+            <th>Αρ. Εισαγωγής</th>
+            <th>Ημ/νία Εισαγωγής</th>
+            <th>Συγγραφέας</th>
+            <th>KOHA</th>
+            <th>Τίτλος</th>
+            <th>Εκδότης</th>
+            <th>Έκδοση</th>
+            <th>Έτος Έκδοσης</th>
+            <th>Τόπος Έκδοσης</th>
+            <th>Σχήμα</th>
+            <th>Σελίδες</th>
+            <th>Τόμος</th>
+            <th>Τρόπος Προμήθειας/Παραλαβής</th>
+            <th>ISBN</th>
+            <th>Στήλη1</th>
+            <th>Στήλη2</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ dup.right.ari8mos }}</td>
+            <td>{{ dup.right.hmeromhnia_eis }}</td>
+            <td>{{ dup.right.syggrafeas }}</td>
+            <td>{{ dup.right.koha }}</td>
+            <td>{{ dup.right.titlos }}</td>
+            <td>{{ dup.right.ekdoths }}</td>
+            <td>{{ dup.right.ekdosh }}</td>
+            <td>{{ dup.right.etosEkdoshs }}</td>
+            <td>{{ dup.right.toposEkdoshs }}</td>
+            <td>{{ dup.right.sxhma }}</td>
+            <td>{{ dup.right.selides }}</td>
+            <td>{{ dup.right.tomos }}</td>
+            <td>{{ dup.right.troposPromPar }}</td>
+            <td>{{ dup.right.ISBN }}</td>
+            <td>{{ dup.right.sthlh1 }}</td>
+            <td>{{ dup.right.sthlh2 }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- ============================= -->
+<!--   ΠΙΝΑΚΑΣ 2: DATABASE RECORD  -->
+<!-- ============================= -->
+
+<h3 style="margin-top:30px; color:#8a1f1f;">Database Record</h3>
+
+<table border="1" cellpadding="8" cellspacing="0" width="100%">
+    <thead>
+        <tr style="background:#f0f0f0;">
+            <th>Αρ. Εισαγωγής</th>
+            <th>Ημ/νία Εισαγωγής</th>
+            <th>Συγγραφέας</th>
+            <th>KOHA</th>
+            <th>Τίτλος</th>
+            <th>Εκδότης</th>
+            <th>Έκδοση</th>
+            <th>Έτος Έκδοσης</th>
+            <th>Τόπος Έκδοσης</th>
+            <th>Σχήμα</th>
+            <th>Σελίδες</th>
+            <th>Τόμος</th>
+            <th>Τρόπος Προμήθειας/Παραλαβής</th>
+            <th>ISBN</th>
+            <th>Στήλη1</th>
+            <th>Στήλη2</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ dup.left.ari8mos }}</td>
+            <td>{{ dup.left.hmeromhnia_eis }}</td>
+            <td>{{ dup.left.syggrafeas }}</td>
+            <td>{{ dup.left.koha }}</td>
+            <td>{{ dup.left.titlos }}</td>
+            <td>{{ dup.left.ekdoths }}</td>
+            <td>{{ dup.left.ekdosh }}</td>
+            <td>{{ dup.left.etosEkdoshs }}</td>
+            <td>{{ dup.left.toposEkdoshs }}</td>
+            <td>{{ dup.left.sxhma }}</td>
+            <td>{{ dup.left.selides }}</td>
+            <td>{{ dup.left.tomos }}</td>
+            <td>{{ dup.left.troposPromPar }}</td>
+            <td>{{ dup.left.ISBN }}</td>
+            <td>{{ dup.left.sthlh1 }}</td>
+            <td>{{ dup.left.sthlh2 }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- ============================= -->
+<!--   ΚΟΥΜΠΙΑ ΕΝΕΡΓΕΙΩΝ (EDIT / SKIP) -->
+<!-- ============================= -->
+
+<form method="post" action="{% url 'handle_duplicate' %}" style="margin-top:20px;">
+    {% csrf_token %}
+
+    <!-- Η ΜΟΝΑΔΙΚΗ ΣΩΣΤΗ ΑΛΛΑΓΗ -->
+    <input type="hidden" name="ari8mos" value="{{ dup.left.ari8mos }}">
+
+    <button name="action" value="edit" style="padding:8px 15px;">
+        Επεξεργασία
+    </button>
+    <button name="action" value="skip" style="padding:8px 15px;">
+        Παράβλεψη
+    </button>
+</form>
+
+<hr style="margin:40px 0; border:1px solid #ccc;">
+
+{% endfor %}
+
+<!-- ============================= -->
+<!--   ΓΕΝΙΚΕΣ ΕΝΕΡΓΕΙΕΣ (ΟΛΕΣ ΜΕΣΑ) -->
+<!-- ============================= -->
+
+<div style="text-align:center; margin-top:40px;">
+
+    <!-- Παράβλεψη όλων -->
+    <form method="post" action="{% url 'skip_all_duplicates' %}" style="display:inline-block; margin-right:10px;">
+        {% csrf_token %}
+        <button style="
+            padding:10px 20px;
+            background-color:#d9534f;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+        ">
+            Παράβλεψη όλων
+        </button>
+    </form>
+
+    <!-- Επιστροφή στην αρχική -->
+    <a href="{% url 'home' %}">
+        <button style="
+            padding:10px 20px;
+            background-color:#5bc0de;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            margin-right:10px;
+        ">
+            Επιστροφή στην αρχική
+        </button>
+    </a>
+
+    <!-- Προβολή όλων των εγγραφών -->
+    <a href="{% url 'show_people' %}">
+        <button style="
+            padding:10px 20px;
+            background-color:#0275d8;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+        ">
+            Προβολή όλων των εγγραφών
+        </button>
+    </a>
+
+</div>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>Νέα Εισαγωγή</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: #f4f7fb;
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.page-wrapper {
+    max-width: 1400px;
+    margin: 30px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+h1 {
+    margin-bottom: 25px;
+    color: #1f3c88;
+}
+
+form {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    width: 100%;
+}
+
+.field-box {
+    background: #e8f0ff;
+    padding: 10px;
+    border-radius: 8px;
+    border-left: 4px solid #1f3c88;
+}
+
+.field-box label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #1f3c88;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 6px 8px;
+    border-radius: 5px;
+    border: 1px solid #c6d4ff;
+    font-size: 14px;
+    background: #fff;
+}
+
+input[readonly] {
+    background: #dde6ff;
+    font-weight: bold;
+}
+
+/* textarea μικρό αρχικά – μεγαλώνει προς τα κάτω */
+textarea {
+    resize: none;
+    overflow: hidden;
+    min-height: 28px;
+    line-height: 1.3;
+}
+
+/* ΚΟΥΜΠΙΑ */
+.submit-wrapper {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+button {
+    background: #1f3c88;
+    color: white;
+    border: none;
+    padding: 11px 30px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #162c63;
+}
+
+.btn-secondary {
+    background: #2d6cdf;
+    color: white;
+    text-decoration: none;
+    padding: 11px 30px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.btn-secondary:hover {
+    background: #1f56b3;
+}
+
+/* ΜΗΝΥΜΑ ΥΠΟΒΟΛΗΣ */
+.submit-msg {
+    font-size: 14px;
+    color: #1f3c88;
+    font-weight: 600;
+}
+</style>
+</head>
+
+<body>
+<div class="page-wrapper">
+    <h1>Νέα Εισαγωγή Βιβλίου</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="field-box">
+            <label>ΑΡΙΘΜΟΣ ΕΙΣΑΓΩΓΗΣ</label>
+            <input type="text" value="{{ next_number }}" readonly>
+        </div>
+
+        <div class="field-box">
+            <label>ΗΜΕΡΟΜΗΝΙΑ ΕΙΣΑΓΩΓΗΣ</label>
+            {{ form.hmeromhnia_eis }}
+        </div>
+
+        <div class="field-box">
+            <label>ΣΥΓΓΡΑΦΕΑΣ</label>
+            {{ form.syggrafeas }}
+        </div>
+
+        <div class="field-box">
+            <label>ΣΥΓΓΡΑΦΕΑΣ KOHA</label>
+            {{ form.koha }}
+        </div>
+
+        <div class="field-box">
+            <label>ΤΙΤΛΟΣ</label>
+            {{ form.titlos }}
+        </div>
+
+        <div class="field-box">
+            <label>ΕΚΔΟΤΗΣ</label>
+            {{ form.ekdoths }}
+        </div>
+
+        <div class="field-box">
+            <label>ΕΚΔΟΣΗ</label>
+            {{ form.ekdosh }}
+        </div>
+
+        <div class="field-box">
+            <label>ΕΤΟΣ ΕΚΔΟΣΗΣ</label>
+            {{ form.etosEkdoshs }}
+        </div>
+
+        <div class="field-box">
+            <label>ΤΟΠΟΣ ΕΚΔΟΣΗΣ</label>
+            {{ form.toposEkdoshs }}
+        </div>
+
+        <div class="field-box">
+            <label>ΣΧΗΜΑ</label>
+            {{ form.sxhma }}
+        </div>
+
+        <div class="field-box">
+            <label>ΣΕΛΙΔΕΣ</label>
+            {{ form.selides }}
+        </div>
+
+        <div class="field-box">
+            <label>ΤΟΜΟΣ</label>
+            {{ form.tomos }}
+        </div>
+
+        <div class="field-box">
+            <label>ΤΡΟΠΟΣ ΠΡΟΜΗΘΕΙΑΣ / ΠΑΡΑΤΗΡΗΣΕΙΣ</label>
+            {{ form.troposPromPar }}
+        </div>
+
+        <div class="field-box">
+            <label>ISBN</label>
+            {{ form.ISBN }}
+        </div>
+
+        <div class="field-box">
+            <label>ΣΤΗΛΗ 1</label>
+            {{ form.sthlh1 }}
+        </div>
+
+        <div class="field-box">
+            <label>ΣΤΗΛΗ 2</label>
+            {{ form.sthlh2 }}
+        </div>
+
+        <div class="submit-wrapper">
+            <a href="{% url 'home' %}" class="btn-secondary">Αρχική</a>
+            <button type="submit">Υποβολή</button>
+
+            {% if request.GET.submitted == "1" %}
+            <span class="submit-msg" id="submit-msg">Υποβλήθηκε</span>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll("textarea").forEach(el => {
+        el.addEventListener("input", function () {
+            this.style.height = "auto";
+            this.style.height = this.scrollHeight + "px";
+        });
+    });
+
+    const msg = document.getElementById("submit-msg");
+    if (msg) {
+        setTimeout(() => {
+            msg.style.display = "none";
+
+            // 🔥 ΚΑΘΑΡΙΖΕΙ ΤΟ URL ΓΙΑ ΠΑΝΤΑ
+            window.history.replaceState(
+                {},
+                document.title,
+                window.location.pathname
+            );
+
+        }, 3000);
+    }
+});
+</script>
+
+</body>
+</html>
